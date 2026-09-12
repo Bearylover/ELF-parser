@@ -85,6 +85,6 @@ void print_header_info(const ELFHeader& header) {
     }
 
     std::cout << "Entry: 0x" << std::hex << header.entry << '\n';
-    std::cout << "Program Offset: " << header.program_offset << " bytes\n";
-    std::cout << "Section Offset: " << header.section_offset << " bytes\n";
+    std::cout << "Program Offset: 0x" << header.program_offset << " bytes\n";
+    std::cout << "Section Offset: 0x" << header.section_offset << " bytes\n";
 }

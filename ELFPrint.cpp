@@ -94,10 +94,10 @@ void print_section_info(const SectionHeader& section) {
     std::cout << "Type: " << section.type << '\n';
     std::cout << "Flags: " << section.flags << '\n';
     std::cout << "Address: " << section.addr << '\n';
-    std::cout << "Offset: " << section.offset << '\n';
+    std::cout << "File Offset: " << section.offset << '\n';
     std::cout << "Size: " << section.size << '\n';
     std::cout << "Link: " << section.link << '\n';
     std::cout << "Info: " << section.info << '\n';
-    std::cout << "Address Align: " << section.addralign << '\n';
+    std::cout << "Address Alignment: " << section.addralign << '\n';
     std::cout << "Entry Size: " << section.entsize << '\n';
 }

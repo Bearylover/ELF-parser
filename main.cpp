@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <optional>
+#include <vector>
 
 bool read_bytes(std::ifstream& file, void* destination, std::size_t size) {
     if (!file.read(reinterpret_cast<char*>(destination), size)) {
@@ -105,6 +106,29 @@ int main(int argc, char* argv[]) {
     if (read_bytes(file, &header.section_entry_size, sizeof(header.section_entry_size))) return 1;
     if (read_bytes(file, &header.section_count, sizeof(header.section_count))) return 1;
     if (read_bytes(file, &header.section_string_index, sizeof(header.section_string_index))) return 1;
+
+    uint64_t offset;
+    std::vector<SectionHeader> sections(header.section_count);
+
+    for (uint16_t i = 0; i < header.section_count; ++i) {
+        offset = header.section_offset + i * header.section_entry_size;
+        file.seekg(offset);
+        if (!file) {
+            std::cerr << "Failed to seek section " << i << " header\n";
+            return 1;
+        }
+        
+        if (read_bytes(file, &sections[i].name, sizeof(sections[i].name))) return 1;
+        if (read_bytes(file, &sections[i].type, sizeof(sections[i].type))) return 1;
+        if (read_bytes(file, &sections[i].flags, sizeof(sections[i].flags))) return 1;
+        if (read_bytes(file, &sections[i].addr, sizeof(sections[i].addr))) return 1;
+        if (read_bytes(file, &sections[i].offset, sizeof(sections[i].offset))) return 1;
+        if (read_bytes(file, &sections[i].size, sizeof(sections[i].size))) return 1;
+        if (read_bytes(file, &sections[i].link, sizeof(sections[i].link))) return 1;
+        if (read_bytes(file, &sections[i].info, sizeof(sections[i].info))) return 1;
+        if (read_bytes(file, &sections[i].addralign, sizeof(sections[i].addralign))) return 1;
+        if (read_bytes(file, &sections[i].entsize, sizeof(sections[i].entsize))) return 1;
+    }
 
     print_header_info(header);
 

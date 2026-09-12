@@ -88,3 +88,16 @@ void print_header_info(const ELFHeader& header) {
     std::cout << "Program Offset: 0x" << header.program_offset << " bytes\n";
     std::cout << "Section Offset: 0x" << header.section_offset << " bytes\n";
 }
+
+void print_section_info(const SectionHeader& section) {
+    std::cout << "Name offset: " << section.name << '\n';
+    std::cout << "Type: " << section.type << '\n';
+    std::cout << "Flags: " << section.flags << '\n';
+    std::cout << "Address: " << section.addr << '\n';
+    std::cout << "Offset: " << section.offset << '\n';
+    std::cout << "Size: " << section.size << '\n';
+    std::cout << "Link: " << section.link << '\n';
+    std::cout << "Info: " << section.info << '\n';
+    std::cout << "Address Align: " << section.addralign << '\n';
+    std::cout << "Entry Size: " << section.entsize << '\n';
+}

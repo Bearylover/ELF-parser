@@ -2,3 +2,4 @@
 #include "ELFTypes.h"
 
 void print_header_info(const ELFHeader& header);
+void print_section_info(const SectionHeader& section);

@@ -132,18 +132,19 @@ int main(int argc, char* argv[]) {
 
     print_header_info(header);
 
-    const SectionHeader& string_table = sections[header.section_string_index];
+    const SectionHeader& strtab = sections[header.section_string_index];
     
     if (header.section_string_index >= sections.size()) {
         std::cerr << "Invalid section string table index\n";
         return 1;
     }
 
-    std::vector<char> section_string_table(string_table.size);
-    file.seekg(string_table.offset);
-    if (!read_bytes(file, section_string_table.data(), section_string_table.size())) return 1;
+    std::vector<char> section_strtab(strtab.size);
+    file.seekg(strtab.offset);
+    if (!read_bytes(file, section_strtab.data(), section_strtab.size())) return 1;
 
-    for (auto c : section_string_table) {
+    uint64_t strtab_index;
+    for (auto c : section_strtab) {
         if (c == 0) {
             std::cout << '\n';
         } else {

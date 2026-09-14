@@ -143,10 +143,16 @@ int main(int argc, char* argv[]) {
     file.seekg(strtab.offset);
     if (!read_bytes(file, section_strtab.data(), section_strtab.size())) return 1;
 
-    uint64_t strtab_index;
+    uint64_t strtab_index = 0;
     for (auto c : section_strtab) {
         if (c == 0) {
-            std::cout << '\n';
+            if (strtab_index == 0) {
+                std::cout << "[0] <null>\n";
+                std::cout << "[1] ";
+            } else {
+                std::cout << '\n';
+                std::cout << "[" << strtab_index << "] ";
+            }
         } else {
             std::cout << c;
         }

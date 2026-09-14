@@ -85,8 +85,8 @@ void print_header_info(const ELFHeader& header) {
     }
 
     std::cout << "Entry Point Address: 0x" << std::hex << header.entry << '\n';
-    std::cout << "Program Offset: 0x" << header.program_offset << " bytes\n";
-    std::cout << "Section Offset: 0x" << header.section_offset << " bytes\n";
+    std::cout << "Program Offset: " << std::dec << header.program_offset << " bytes (0x" << std::hex << header.program_offset << ")\n";
+    std::cout << "Section Offset: " << std::dec << header.section_offset << " bytes (0x" << std::hex << header.section_offset << ")\n";
 }
 
 void print_section_info(const SectionHeader& section) {
@@ -100,4 +100,24 @@ void print_section_info(const SectionHeader& section) {
     std::cout << "Info: " << section.info << '\n';
     std::cout << "Address Alignment: " << section.addralign << '\n';
     std::cout << "Entry Size: " << section.entsize << '\n';
+}
+
+void print_strtab(const std::vector<char>& strtab) {
+    uint64_t strtab_index = 0;
+    for (auto c : strtab) {
+        if (c == 0) {
+            if (strtab_index == 0) {
+                std::cout << "[0] <null>\n";
+                std::cout << "[1] ";
+                strtab_index += 2;
+            } else {
+                std::cout << '\n';
+                std::cout << "[" << std::dec << strtab_index << "] ";
+                strtab_index++;
+            }
+        } else {
+            std::cout << c;
+        }
+    }
+    std::cout << "<null>\n";
 }

@@ -130,8 +130,6 @@ int main(int argc, char* argv[]) {
         if (!read_bytes(file, &sections[i].entsize, sizeof(sections[i].entsize))) return 1;
     }
 
-    print_header_info(header);
-
     const SectionHeader& strtab = sections[header.section_string_index];
     
     if (header.section_string_index >= sections.size()) {
@@ -143,6 +141,11 @@ int main(int argc, char* argv[]) {
     file.seekg(strtab.offset);
     if (!read_bytes(file, section_strtab.data(), section_strtab.size())) return 1;
 
+    std::cout << "Header Info: \n";
+    print_header_info(header);
+    std::cout << "\nString Table Section Info: \n";
+    print_section_info(strtab);
+    std::cout << "\nString Table: \n";
     print_strtab(section_strtab);
 
     return 0;

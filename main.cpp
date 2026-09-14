@@ -16,6 +16,17 @@ bool read_bytes(std::ifstream& file, void* destination, std::size_t size) {
     return true;
 }
 
+std::optional<std::string> get_section_name(const SectionHeader& section, const std::vector<char>& strtab) {
+    uint32_t init_idx = section.name;
+    std::string resolved_name;
+    if (init_idx >= strtab.size()) return std::nullopt;
+    while (strtab[init_idx] != 0) {
+        resolved_name.push_back(strtab[init_idx]);
+        init_idx++;
+    }
+    return resolved_name;
+}
+
 std::optional<ELFClass> parse_class(uint8_t val) {
     if (val != static_cast<uint8_t>(ELFClass::ELF32) && val != static_cast<uint8_t>(ELFClass::ELF64)) {
         return std::nullopt;

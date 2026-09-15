@@ -62,14 +62,16 @@ int main(int argc, char* argv[]) {
     if (!parsed_program_header) return 1;
     std::vector<ProgramHeader> programs = *parsed_program_header;
 
+    //Printing
+
     std::cout << "Header Info: \n";
     print_header_info(header);
     std::cout << "\nString Table Section Info: \n";
-    print_section_header(sections[header.section_string_index]); //strtab as example, function can print any section
+    print_section_header(sections[header.section_string_index]); //strtab as example, function can print any section header
     std::cout << "\nString Table: \n";
     print_strtab(section_strtab);
     std::cout << "Sample Program Header Info: \n";
-    print_program_header(programs[0]);
+    print_program_header(programs[0]); //again, programs[0] as example, function can print any program header
 
     return 0;
 }

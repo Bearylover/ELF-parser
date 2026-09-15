@@ -102,6 +102,17 @@ void print_section_header(const SectionHeader& section) {
     std::cout << "Entry Size: " << section.entsize << '\n';
 }
 
+void print_program_header(const ProgramHeader& program) {
+    std::cout << "Type: " << program.type << '\n';
+    std::cout << "Flags : " << program.flags << '\n';
+    std::cout << "Offset : " << program.offset << '\n';
+    std::cout << "Virtual Address : " << program.vaddr << '\n';
+    std::cout << "Physical Address : " << program.paddr << '\n';
+    std::cout << "File Size : " << program.filesz << '\n';
+    std::cout << "Memory Size : " << program.memsz << '\n';
+    std::cout << "Alignment : " << program.align << '\n';
+}
+
 void print_strtab(const std::vector<char>& strtab) {
     uint64_t strtab_index = 0;
     for (auto c : strtab) {

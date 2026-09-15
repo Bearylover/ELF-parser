@@ -53,6 +53,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    //Header reading
+    //Reads all the info from the header (while verifying)
+    //This has to come first, since you need the section/program header offset to do anything else
+
     ELFHeader header;
 
     if (!read_bytes(file, header.ident, sizeof(header.ident))) return 1;
@@ -119,6 +123,10 @@ int main(int argc, char* argv[]) {
     if (!read_bytes(file, &header.section_count, sizeof(header.section_count))) return 1;
     if (!read_bytes(file, &header.section_string_index, sizeof(header.section_string_index))) return 1;
 
+    //Section reading
+    //Loops using header parameters, seeks to every section, reads their info.
+    //All section info is saved in a vector of SectionHeader.
+
     uint64_t offset;
     std::vector<SectionHeader> sections(header.section_count);
 
@@ -142,6 +150,8 @@ int main(int argc, char* argv[]) {
         if (!read_bytes(file, &sections[i].entsize, sizeof(sections[i].entsize))) return 1;
     }
 
+    //Fetches the string table. VERY IMPORTANT.
+    //The get_section_name function relies on this. Always use strtab as the second argument (unless you find another strtab somewhere)
     const SectionHeader& strtab = sections[header.section_string_index];
     
     if (header.section_string_index >= sections.size()) {
@@ -153,10 +163,33 @@ int main(int argc, char* argv[]) {
     file.seekg(strtab.offset);
     if (!read_bytes(file, section_strtab.data(), section_strtab.size())) return 1;
 
+    //Program reading
+    //Same concept as section reading
+
+    std::vector<ProgramHeader> programs(header.program_count);
+
+    for (uint16_t i = 0; i < header.program_count; ++i) {
+        offset = header.program_offset+ i * header.program_entry_size;
+        file.seekg(offset);
+        if (!file) {
+            std::cerr << "Failed to seek program " << i << " header\n";
+            return 1;
+        }
+        
+        if (!read_bytes(file, &programs[i].type, sizeof(programs[i].type))) return 1;
+        if (!read_bytes(file, &programs[i].flags, sizeof(programs[i].flags))) return 1;
+        if (!read_bytes(file, &programs[i].offset, sizeof(programs[i].offset))) return 1;
+        if (!read_bytes(file, &programs[i].vaddr, sizeof(programs[i].vaddr))) return 1;
+        if (!read_bytes(file, &programs[i].paddr, sizeof(programs[i].paddr))) return 1;
+        if (!read_bytes(file, &programs[i].filesz, sizeof(programs[i].filesz))) return 1;
+        if (!read_bytes(file, &programs[i].memsz, sizeof(programs[i].memsz))) return 1;
+        if (!read_bytes(file, &programs[i].align, sizeof(programs[i].align))) return 1;
+    }
+
     std::cout << "Header Info: \n";
     print_header_info(header);
     std::cout << "\nString Table Section Info: \n";
-    print_section_info(strtab);
+    print_section_header(strtab);
     std::cout << "\nString Table: \n";
     print_strtab(section_strtab);
 

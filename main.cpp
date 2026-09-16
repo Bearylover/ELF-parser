@@ -9,18 +9,6 @@
 #include <optional>
 #include <vector>
 
-std::optional<std::string> get_section_name(const SectionHeader& section, const std::vector<char>& strtab) {
-    uint32_t init_idx = section.name;
-    std::string resolved_name;
-    if (init_idx >= strtab.size()) return std::nullopt;
-    while (strtab[init_idx] != 0 && (init_idx < strtab.size())) {
-        resolved_name.push_back(strtab[init_idx]);
-        init_idx++;
-    }
-    if (init_idx == strtab.size()) return std::nullopt;
-    return resolved_name;
-}
-
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: elfinspect <file>\n";

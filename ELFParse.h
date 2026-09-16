@@ -14,3 +14,4 @@ std::optional<ELFHeader> parse_header(std::ifstream& file);
 std::optional<std::vector<SectionHeader>> parse_section_headers(std::ifstream& file, const ELFHeader& header);
 std::optional<std::vector<char>> read_strtab(std::ifstream& file, const ELFHeader& header, const std::vector<SectionHeader>& sections);
 std::optional<std::vector<ProgramHeader>> parse_program_headers(std::ifstream& file, const ELFHeader& header);
+std::optional<std::string> get_section_name(const SectionHeader& section, const std::vector<char>& strtab);

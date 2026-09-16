@@ -103,7 +103,34 @@ void print_section_header(const SectionHeader& section) {
 }
 
 void print_program_header(const ProgramHeader& program) {
-    std::cout << "Type: " << program.type << '\n';
+    switch (program.type) {
+        case 0:
+            std::cout << "Type: PT_NULL\n";
+            break;
+        case 1:
+            std::cout << "Type: PT_LOAD\n";
+            break;
+        case 2:
+            std::cout << "Type: PT_DYNAMIC\n";
+            break;
+        case 3:
+            std::cout << "Type: PT_INTERP\n";
+            break;
+        case 4:
+            std::cout << "Type: PT_NOTE\n";
+            break;
+        case 5:
+            std::cout << "Type: PT_SHLIB\n";
+            break;
+        case 6:
+            std::cout << "Type: PT_PHDR\n";
+            break;
+        case 7:
+            std::cout << "Type: PT_TLS\n";
+            break;
+        default:
+            std::cout << "Unknown type: " << program.type << '\n';
+    }
     std::cout << "Flags : " << program.flags << '\n';
     std::cout << "Offset : " << program.offset << '\n';
     std::cout << "Virtual Address : " << program.vaddr << '\n';

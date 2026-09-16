@@ -32,46 +32,30 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    //Header reading
-    //Reads all the info from the header (while verifying)
-    //This has to come first, since you need the section/program header offset to do anything else
-
     auto parsed_header = parse_header(file);
     if (!parsed_header) return 1;
     ELFHeader header = *parsed_header;
-
-    //Section reading
-    //Loops using header parameters, seeks to every section, reads their info.
-    //All section info is saved in a vector of SectionHeader.
 
     auto parsed_section_header = parse_section_headers(file, header);
     if (!parsed_section_header) return 1;
     std::vector<SectionHeader> sections = *parsed_section_header;
 
-    //Fetches the string table. VERY IMPORTANT.
-    //The get_section_name function relies on this. Always use strtab as the second argument (unless you find another strtab somewhere)
-
     auto parsed_strtab = read_strtab(file, header, sections);
     if (!parsed_strtab) return 1;
     std::vector<char> section_strtab = *parsed_strtab;
-
-    //Program reading
-    //Same concept as section reading
 
     auto parsed_program_header = parse_program_headers(file, header);
     if (!parsed_program_header) return 1;
     std::vector<ProgramHeader> programs = *parsed_program_header;
 
-    //Printing
-
     std::cout << "Header Info: \n";
     print_header_info(header);
     std::cout << "\nString Table Section Info: \n";
-    print_section_header(sections[header.section_string_index]); //strtab as example, function can print any section header
+    print_section_header(sections[header.section_string_index]);
     std::cout << "\nString Table: \n";
     print_strtab(section_strtab);
     std::cout << "Sample Program Header Info: \n";
-    print_program_header(programs[0]); //again, programs[0] as example, function can print any program header
+    print_program_header(programs[0]);
 
     return 0;
 }

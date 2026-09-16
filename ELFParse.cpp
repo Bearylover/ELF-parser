@@ -168,3 +168,23 @@ std::optional<std::string> get_section_name(const SectionHeader& section, const 
     if (init_idx == strtab.size()) return std::nullopt;
     return resolved_name;
 }
+
+std::string get_program_flags(uint32_t flags) {
+    std::string result;
+    if (flags & 4) {
+        result += 'R';
+    } else {
+        result += '-';
+    }
+    if (flags & 2) {
+        result += 'W';
+    } else {
+        result += '-';
+    }
+    if (flags & 1) {
+        result += 'X';
+    } else {
+        result += '-';
+    }
+    return result;
+}

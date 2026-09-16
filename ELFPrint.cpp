@@ -1,4 +1,5 @@
 #include "ELFPrint.h"
+#include "ELFParse.h"
 #include <iostream>
 
 void print_header_info(const ELFHeader& header) {
@@ -131,13 +132,11 @@ void print_program_header(const ProgramHeader& program) {
         default:
             std::cout << "Unknown type: " << program.type << '\n';
     }
-    std::cout << "Flags : " << program.flags << '\n';
-    std::cout << "Offset : " << program.offset << '\n';
-    std::cout << "Virtual Address : " << program.vaddr << '\n';
+    std::cout << "Flags : " << get_program_flags(program.flags) << '\n';
+    std::cout << "File Range : [" << program.offset << ", " << program.offset + program.filesz << ")\n";
+    std::cout << "Memory Range : [" << program.vaddr << ", " << program.vaddr + program.memsz << ")\n";
     std::cout << "Physical Address : " << program.paddr << '\n';
-    std::cout << "File Size : " << program.filesz << '\n';
-    std::cout << "Memory Size : " << program.memsz << '\n';
-    std::cout << "Alignment : " << program.align << '\n';
+    std::cout << "Alignment : 0x" << std::hex << program.align << std::dec << '\n';
 }
 
 void print_strtab(const std::vector<char>& strtab) {

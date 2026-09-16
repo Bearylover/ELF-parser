@@ -132,7 +132,7 @@ void print_program_header(const ProgramHeader& program) {
         default:
             std::cout << "Unknown type: " << program.type << '\n';
     }
-    std::cout << "Flags : " << get_program_flags(program.flags) << '\n';
+    std::cout << "Flags : " << get_program_flags(program.flags) << " (0x" << std::hex << program.flags << std::dec << ")\n";
     std::cout << "File Range : [" << program.offset << ", " << program.offset + program.filesz << ")\n";
     std::cout << "Memory Range : [" << program.vaddr << ", " << program.vaddr + program.memsz << ")\n";
     std::cout << "Physical Address : " << program.paddr << '\n';

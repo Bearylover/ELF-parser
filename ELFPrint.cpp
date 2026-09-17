@@ -161,3 +161,20 @@ void print_strtab(const std::vector<char>& strtab) {
     }
     std::cout << "<null>\n";
 }
+
+void print_sections_in_segments(const std::vector<SectionHeader>& sections, const std::vector<ProgramHeader>& programs, const std::vector<char>& section_strtab) {
+    size_t idx = 0;
+    for (auto i : programs) {
+        std::vector<size_t> section_index = sections_in_segment(i, sections);
+        std::cout << "Segment " << idx << ":\n";
+        for (auto j : section_index) {
+            auto parsed_name = get_section_name(sections[j], section_strtab);
+            if (!parsed_name) {
+                std::cout << "|  <invalid name>" << "\n";
+            } else {
+                std::cout << "|  " << *parsed_name << "\n";
+            }
+        }
+        idx++;
+    }
+}

@@ -193,7 +193,7 @@ std::vector<size_t> sections_in_segment(const ProgramHeader& segment, const std:
     std::vector<size_t> section_index;
     size_t idx = 0;
     for (SectionHeader i : sections) {
-        if (segment.offset < i.offset && (segment.offset + segment.filesz) > (i.offset + i.entsize)) {
+        if (segment.offset < i.offset && (segment.offset + segment.filesz) > (i.offset + i.size)) {
             section_index.push_back(idx);
         }
         idx++;

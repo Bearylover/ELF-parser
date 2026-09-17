@@ -42,8 +42,20 @@ int main(int argc, char* argv[]) {
     print_section_header(sections[header.section_string_index]);
     std::cout << "\nString Table: \n";
     print_strtab(section_strtab);
-    std::cout << "Sample Program Header Info: \n";
+    std::cout << "\nSample Program Header Info: \n";
     print_program_header(programs[0]);
+
+    size_t idx = 0;
+    for (auto i : programs) {
+        std::vector<size_t> section_index = sections_in_segment(i, sections);
+        std::cout << "Segment " << idx << ":\n";
+        for (auto j : section_index) {
+            auto parsed_name = get_section_name(sections[j], section_strtab);
+            if (!parsed_name) return 1;
+            std::cout << "|  " << *parsed_name << "\n";
+        }
+        idx++;
+    }
 
     return 0;
 }

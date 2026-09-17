@@ -188,3 +188,15 @@ std::string get_program_flags(uint32_t flags) {
     }
     return result;
 }
+
+std::vector<size_t> sections_in_segment(const ProgramHeader& segment, const std::vector<SectionHeader>& sections) {
+    std::vector<size_t> section_index;
+    size_t idx = 0;
+    for (SectionHeader i : sections) {
+        if (segment.offset < i.offset && (segment.offset + segment.filesz) > (i.offset + i.entsize)) {
+            section_index.push_back(idx);
+        }
+        idx++;
+    }
+    return section_index;
+}

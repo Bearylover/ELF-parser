@@ -129,8 +129,11 @@ void print_program_header(const ProgramHeader& program) {
         case 7:
             std::cout << "Type: PT_TLS\n";
             break;
+        case 0x6474e552:
+            std::cout << "Type: PT_GNU_RELRO\n";
+            break;
         default:
-            std::cout << "Unknown type: " << program.type << '\n';
+            std::cout << "Unknown type: " << std::hex << program.type << std::dec << '\n';
     }
     std::cout << "Flags : " << get_program_flags(program.flags) << " (0x" << std::hex << program.flags << std::dec << ")\n";
     std::cout << "File Range : [" << program.offset << ", " << program.offset + program.filesz << ")\n";

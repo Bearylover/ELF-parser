@@ -42,8 +42,6 @@ int main(int argc, char* argv[]) {
     print_section_header(sections[header.section_string_index]);
     std::cout << "\nString Table: \n";
     print_strtab(section_strtab);
-    std::cout << "\nSample Program Header Info: \n";
-    print_program_header(programs[0]);
 
     size_t idx = 0;
     for (auto i : programs) {

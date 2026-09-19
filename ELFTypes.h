@@ -58,3 +58,12 @@ struct ProgramHeader{
     uint64_t memsz;
     uint64_t align;
 };
+
+struct Symbol {
+    uint32_t name;
+    uint8_t info;
+    uint8_t other;
+    uint16_t shndx;
+    uint64_t value;
+    uint64_t size;
+};

@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 
     auto parsed_dynsym_strtab = read_strtab(file, sections[dynsym_header.link]);
     if (!parsed_dynsym_strtab) {
-        std::cerr << "Failed to read dynsym strtab\n";
+        std::cerr << "Failed to read dynsym\n";
         return 1;
     }
     std::vector<char> dynsym_strtab = *parsed_dynsym_strtab;

@@ -36,6 +36,21 @@ int main(int argc, char* argv[]) {
     if (!parsed_program_header) return 1;
     std::vector<ProgramHeader> programs = *parsed_program_header;
 
+    SectionHeader symtab_header = {}, dynsym_header = {};
+    for (SectionHeader i : sections) {
+        if (i.type == 3) {
+            symtab_header = i;
+        } else if (i.type == 11) {
+            dynsym_header = i;
+        }
+    }
+    if (symtab_header.link >= header.section_count) {
+        std::cerr << "Invalid symtab location\n";
+    }
+    if (symtab_header.link >= header.section_count) {
+        std::cerr << "Invalid dynamic symtab location\n";
+    }
+
     std::cout << "Header Info: \n";
     print_header_info(header);
     std::cout << "\nString Table Section Info: \n";

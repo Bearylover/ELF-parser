@@ -117,7 +117,7 @@ std::optional<std::vector<SectionHeader>> parse_section_headers(std::ifstream& f
     return sections;
 }
 
-std::optional<std::vector<char>> read_strtab(std::ifstream& file, const SectionHeader& section) {
+std::optional<std::vector<char>> read_section(std::ifstream& file, const SectionHeader& section) {
     std::vector<char> strtab(section.size);
 
     file.seekg(section.offset);

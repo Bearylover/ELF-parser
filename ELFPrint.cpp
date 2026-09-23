@@ -142,7 +142,7 @@ void print_program_header(const ProgramHeader& program) {
     std::cout << "Alignment : 0x" << std::hex << program.align << std::dec << '\n';
 }
 
-void print_strtab(const std::vector<char>& strtab) {
+void print_section(const std::vector<char>& strtab) {
     uint64_t strtab_index = 0;
     for (auto c : strtab) {
         if (c == 0) {

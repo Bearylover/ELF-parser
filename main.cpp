@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         std::cerr << "Invalid section string table index\n";
         return 1;
     }
-    auto parsed_shstrtab = read_strtab(file, sections[header.section_string_index]);
+    auto parsed_shstrtab = read_section(file, sections[header.section_string_index]);
     if (!parsed_shstrtab) {
         std::cerr << "Failed to read shstrtab\n";
         return 1;
@@ -58,14 +58,28 @@ int main(int argc, char* argv[]) {
         std::cerr << "Invalid dynsym strtab location\n";
     }
 
-    auto parsed_symtab_strtab = read_strtab(file, sections[symtab_header.link]);
+    auto parsed_symtab = read_section(file, symtab_header);
+    if (!parsed_symtab) {
+        std::cerr << "Failed to read symtab strtab\n";
+        return 1;
+    }
+    std::vector<char> symtab = *parsed_symtab;
+
+    auto parsed_dynsym = read_section(file, dynsym_header);
+    if (!parsed_dynsym) {
+        std::cerr << "Failed to read symtab strtab\n";
+        return 1;
+    }
+    std::vector<char> dynsym = *parsed_dynsym;
+
+    auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
     if (!parsed_symtab_strtab) {
         std::cerr << "Failed to read symtab strtab\n";
         return 1;
     }
     std::vector<char> symtab_strtab = *parsed_symtab_strtab;
 
-    auto parsed_dynsym_strtab = read_strtab(file, sections[dynsym_header.link]);
+    auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
     if (!parsed_dynsym_strtab) {
         std::cerr << "Failed to read dynsym\n";
         return 1;
@@ -77,13 +91,13 @@ int main(int argc, char* argv[]) {
     std::cout << "\nSection Header String Table Section: \n";
     print_section_header(sections[header.section_string_index]);
     std::cout << "\nSection Header String Table: \n";
-    print_strtab(shstrtab);
+    print_section(shstrtab);
     std::cout << "\nSegment list: \n";
     print_sections_in_segments(sections, programs, shstrtab);
     std::cout << "\nSymtab: \n";
-    print_strtab(symtab_strtab);
+    print_section(symtab_strtab);
     std::cout << "\nDynsym: \n";
-    print_strtab(dynsym_strtab);
+    print_section(dynsym_strtab);
 
     return 0;
 }

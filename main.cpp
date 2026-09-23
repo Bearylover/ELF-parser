@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 
     SectionHeader symtab_header = {}, dynsym_header = {};
     for (SectionHeader i : sections) {
-        if (i.type == 3) {
+        if (i.type == 2) {
             symtab_header = i;
         } else if (i.type == 11) {
             dynsym_header = i;

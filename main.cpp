@@ -28,7 +28,11 @@ int main(int argc, char* argv[]) {
     if (!parsed_section_header) return 1;
     std::vector<SectionHeader> sections = *parsed_section_header;
 
-    auto parsed_shstrtab = read_shstrtab(file, header, sections);
+    if (header.section_string_index >= sections.size()) {
+        std::cerr << "Invalid section string table index\n";
+        return 1;
+    }
+    auto parsed_shstrtab = read_strtab(file, sections[header.section_string_index]);
     if (!parsed_shstrtab) return 1;
     std::vector<char> shstrtab = *parsed_shstrtab;
 
@@ -52,9 +56,7 @@ int main(int argc, char* argv[]) {
     }
     SectionHeader symtab_strtab_header = sections[symtab_header.link];
     SectionHeader dynsym_strtab_header = sections[dynsym_header.link];
-    //symtab
-    std::vector<char> strtab;
-    
+    std::vector<char> symtab_strtab, dynsym_strtab;
 
     std::cout << "Header Info: \n";
     print_header_info(header);

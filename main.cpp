@@ -74,9 +74,9 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Header Info: \n";
     print_header_info(header);
-    std::cout << "\nString Table Section Info: \n";
+    std::cout << "\nSection Header String Table Section: \n";
     print_section_header(sections[header.section_string_index]);
-    std::cout << "\nString Table: \n";
+    std::cout << "\nSection Header String Table: \n";
     print_strtab(shstrtab);
     std::cout << "\nSegment list: \n";
     print_sections_in_segments(sections, programs, shstrtab);

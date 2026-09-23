@@ -117,19 +117,19 @@ std::optional<std::vector<SectionHeader>> parse_section_headers(std::ifstream& f
     return sections;
 }
 
-std::optional<std::vector<char>> read_strtab(std::ifstream& file, const ELFHeader& header, const std::vector<SectionHeader>& sections) {
+std::optional<std::vector<char>> read_shstrtab(std::ifstream& file, const ELFHeader& header, const std::vector<SectionHeader>& sections) {
     if (header.section_string_index >= sections.size()) {
         std::cerr << "Invalid section string table index\n";
         return std::nullopt;
     }
     
     const SectionHeader& strtab = sections[header.section_string_index];
-    std::vector<char> section_strtab(strtab.size);
+    std::vector<char> shstrtab(strtab.size);
 
     file.seekg(strtab.offset);
-    if (!read_bytes(file, section_strtab.data(), section_strtab.size())) return std::nullopt;
+    if (!read_bytes(file, shstrtab.data(), shstrtab.size())) return std::nullopt;
 
-    return section_strtab;
+    return shstrtab;
 }
 
 std::optional<std::vector<ProgramHeader>> parse_program_headers(std::ifstream& file, const ELFHeader& header) {

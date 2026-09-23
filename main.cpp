@@ -28,9 +28,9 @@ int main(int argc, char* argv[]) {
     if (!parsed_section_header) return 1;
     std::vector<SectionHeader> sections = *parsed_section_header;
 
-    auto parsed_strtab = read_strtab(file, header, sections);
-    if (!parsed_strtab) return 1;
-    std::vector<char> section_strtab = *parsed_strtab;
+    auto parsed_shstrtab = read_shstrtab(file, header, sections);
+    if (!parsed_shstrtab) return 1;
+    std::vector<char> shstrtab = *parsed_shstrtab;
 
     auto parsed_program_header = parse_program_headers(file, header);
     if (!parsed_program_header) return 1;
@@ -52,15 +52,18 @@ int main(int argc, char* argv[]) {
     }
     SectionHeader symtab_strtab_header = sections[symtab_header.link];
     SectionHeader dynsym_strtab_header = sections[dynsym_header.link];
+    //symtab
+    std::vector<char> strtab;
+    
 
     std::cout << "Header Info: \n";
     print_header_info(header);
     std::cout << "\nString Table Section Info: \n";
     print_section_header(sections[header.section_string_index]);
     std::cout << "\nString Table: \n";
-    print_strtab(section_strtab);
+    print_strtab(shstrtab);
     std::cout << "\nSegment list: \n";
-    print_sections_in_segments(sections, programs, section_strtab);
+    print_sections_in_segments(sections, programs, shstrtab);
 
     return 0;
 }

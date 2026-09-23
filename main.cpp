@@ -80,6 +80,10 @@ int main(int argc, char* argv[]) {
     print_strtab(shstrtab);
     std::cout << "\nSegment list: \n";
     print_sections_in_segments(sections, programs, shstrtab);
+    std::cout << "\nSymtab: \n";
+    print_strtab(symtab_strtab);
+    std::cout << "\nDynsym: \n";
+    print_strtab(dynsym_strtab);
 
     return 0;
 }

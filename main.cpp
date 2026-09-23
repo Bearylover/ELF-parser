@@ -50,6 +50,8 @@ int main(int argc, char* argv[]) {
     if (symtab_header.link >= header.section_count) {
         std::cerr << "Invalid dynamic symtab location\n";
     }
+    SectionHeader symtab_strtab_header = sections[symtab_header.link];
+    SectionHeader dynsym_strtab_header = sections[dynsym_header.link];
 
     std::cout << "Header Info: \n";
     print_header_info(header);

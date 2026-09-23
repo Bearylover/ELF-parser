@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
     print_sections_in_segments(sections, programs, shstrtab);
     std::cout << "\nSymtab: \n";
     print_section(symtab_strtab);
-    std::cout << "\nDynsym: \n";
+    std::cout << "\nDynstr: \n";
     print_section(dynsym_strtab);
 
     return 0;

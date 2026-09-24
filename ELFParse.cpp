@@ -158,7 +158,7 @@ std::optional<std::string> get_section_name(const SectionHeader& section, const 
         std::cout << "Section name out of bounds\n";
         return std::nullopt;
     }
-    while (strtab[init_idx] != 0 && (init_idx < strtab.size())) {
+    while ((init_idx < strtab.size() && strtab[init_idx] != 0)) {
         resolved_name.push_back(strtab[init_idx]);
         init_idx++;
     }

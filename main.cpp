@@ -53,9 +53,11 @@ int main(int argc, char* argv[]) {
     }
     if (symtab_header.link >= header.section_count) {
         std::cerr << "Invalid symtab strtab location\n";
+        return 1;
     }
     if (dynsym_header.link >= header.section_count) {
         std::cerr << "Invalid dynsym strtab location\n";
+        return 1;
     }
 
     auto parsed_symtab = read_section(file, symtab_header);

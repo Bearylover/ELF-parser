@@ -60,13 +60,6 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        auto parsed_symtab = read_section(file, symtab_header);
-        if (!parsed_symtab) {
-            std::cerr << "Failed to read symtab strtab\n";
-            return 1;
-        }
-        std::vector<char> symtab = *parsed_symtab;
-
         auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
         if (!parsed_symtab_strtab) {
             std::cerr << "Failed to read symtab strtab\n";
@@ -87,20 +80,14 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        auto parsed_dynsym = read_section(file, dynsym_header);
-        if (!parsed_dynsym) {
-            std::cerr << "Failed to read symtab strtab\n";
-            return 1;
-        }
-        std::vector<char> dynsym = *parsed_dynsym;
-
         auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
         if (!parsed_dynsym_strtab) {
             std::cerr << "Failed to read dynsym\n";
             return 1;
         }
         std::vector<char> dynsym_strtab = *parsed_dynsym_strtab;
-        std::cout << "\nDynstr: \n";
+
+        std::cout << "\nDynsym: \n";
         print_section(dynsym_strtab);
     } else {
         std::cout << "\nNo dynamic symbol table found.\n";

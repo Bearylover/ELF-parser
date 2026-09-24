@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 
     std::optional<SectionHeader> temp_symtab_header = {}, temp_dynsym_header = {};
     SectionHeader symtab_header, dynsym_header;
-    for (SectionHeader i : sections) {
+    for (const SectionHeader& i : sections) {
         if (i.type == 2) {
             temp_symtab_header = i;
         } else if (i.type == 11) {

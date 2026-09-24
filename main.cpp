@@ -43,50 +43,68 @@ int main(int argc, char* argv[]) {
     if (!parsed_program_header) return 1;
     std::vector<ProgramHeader> programs = *parsed_program_header;
 
-    SectionHeader symtab_header = {}, dynsym_header = {};
+    std::optional<SectionHeader> temp_symtab_header = {}, temp_dynsym_header = {};
+    SectionHeader symtab_header, dynsym_header;
     for (SectionHeader i : sections) {
         if (i.type == 2) {
-            symtab_header = i;
+            temp_symtab_header = i;
         } else if (i.type == 11) {
-            dynsym_header = i;
+            temp_dynsym_header = i;
         }
     }
-    if (symtab_header.link >= header.section_count) {
-        std::cerr << "Invalid symtab strtab location\n";
-        return 1;
-    }
-    if (dynsym_header.link >= header.section_count) {
-        std::cerr << "Invalid dynsym strtab location\n";
-        return 1;
+
+    if (temp_symtab_header) {
+        symtab_header = *temp_symtab_header;
+        if (symtab_header.link >= header.section_count) {
+            std::cerr << "Invalid symtab strtab location\n";
+            return 1;
+        }
+
+        auto parsed_symtab = read_section(file, symtab_header);
+        if (!parsed_symtab) {
+            std::cerr << "Failed to read symtab strtab\n";
+            return 1;
+        }
+        std::vector<char> symtab = *parsed_symtab;
+
+        auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
+        if (!parsed_symtab_strtab) {
+            std::cerr << "Failed to read symtab strtab\n";
+            return 1;
+        }
+        std::vector<char> symtab_strtab = *parsed_symtab_strtab;
+
+        std::cout << "\nSymtab: \n";
+        print_section(symtab_strtab);
+    } else {
+        std::cout << "\nNo symbol table found.\n";
     }
 
-    auto parsed_symtab = read_section(file, symtab_header);
-    if (!parsed_symtab) {
-        std::cerr << "Failed to read symtab strtab\n";
-        return 1;
-    }
-    std::vector<char> symtab = *parsed_symtab;
+    if (temp_dynsym_header) {
+        dynsym_header = *temp_dynsym_header;
+        if (dynsym_header.link >= header.section_count) {
+            std::cerr << "Invalid dynsym strtab location\n";
+            return 1;
+        }
 
-    auto parsed_dynsym = read_section(file, dynsym_header);
-    if (!parsed_dynsym) {
-        std::cerr << "Failed to read symtab strtab\n";
-        return 1;
-    }
-    std::vector<char> dynsym = *parsed_dynsym;
+        auto parsed_dynsym = read_section(file, dynsym_header);
+        if (!parsed_dynsym) {
+            std::cerr << "Failed to read symtab strtab\n";
+            return 1;
+        }
+        std::vector<char> dynsym = *parsed_dynsym;
 
-    auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
-    if (!parsed_symtab_strtab) {
-        std::cerr << "Failed to read symtab strtab\n";
-        return 1;
+        auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
+        if (!parsed_dynsym_strtab) {
+            std::cerr << "Failed to read dynsym\n";
+            return 1;
+        }
+        std::vector<char> dynsym_strtab = *parsed_dynsym_strtab;
+        std::cout << "\nDynstr: \n";
+        print_section(dynsym_strtab);
+    } else {
+        std::cout << "\nNo dynamic symbol table found.\n";
     }
-    std::vector<char> symtab_strtab = *parsed_symtab_strtab;
-
-    auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
-    if (!parsed_dynsym_strtab) {
-        std::cerr << "Failed to read dynsym\n";
-        return 1;
-    }
-    std::vector<char> dynsym_strtab = *parsed_dynsym_strtab;
 
     std::cout << "Header Info: \n";
     print_header_info(header);
@@ -96,10 +114,6 @@ int main(int argc, char* argv[]) {
     print_section(shstrtab);
     std::cout << "\nSegment list: \n";
     print_sections_in_segments(sections, programs, shstrtab);
-    std::cout << "\nSymtab: \n";
-    print_section(symtab_strtab);
-    std::cout << "\nDynstr: \n";
-    print_section(dynsym_strtab);
 
     return 0;
 }

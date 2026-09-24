@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     if (symtab_header.link >= header.section_count) {
         std::cerr << "Invalid symtab strtab location\n";
     }
-    if (symtab_header.link >= header.section_count) {
+    if (dynsym_header.link >= header.section_count) {
         std::cerr << "Invalid dynsym strtab location\n";
     }
 

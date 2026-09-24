@@ -118,12 +118,12 @@ std::optional<std::vector<SectionHeader>> parse_section_headers(std::ifstream& f
 }
 
 std::optional<std::vector<char>> read_section(std::ifstream& file, const SectionHeader& section) {
-    std::vector<char> strtab(section.size);
+    std::vector<char> section_data(section.size);
 
     file.seekg(section.offset);
-    if (!read_bytes(file, strtab.data(), strtab.size())) return std::nullopt;
+    if (!read_bytes(file, section_data.data(), section_data.size())) return std::nullopt;
 
-    return strtab;
+    return section_data;
 }
 
 std::optional<std::vector<ProgramHeader>> parse_program_headers(std::ifstream& file, const ELFHeader& header) {

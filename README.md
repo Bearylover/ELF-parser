@@ -1,5 +1,4 @@
 A simple ELF binary parser.
-Warning: There are currently several known bugs regarding the output of symtab and dynsym, and out-of-bounds accesses due to out-of-order if checks. I'm actively working on a fix.
 
 Setup:
 ```

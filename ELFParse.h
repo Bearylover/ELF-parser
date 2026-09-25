@@ -17,3 +17,4 @@ std::optional<std::vector<ProgramHeader>> parse_program_headers(std::ifstream& f
 std::optional<std::string> get_section_name(const SectionHeader& section, const std::vector<char>& strtab);
 std::string get_program_flags(uint32_t flags);
 std::vector<size_t> sections_in_segment(const ProgramHeader& segment, const std::vector<SectionHeader>& sections);
+std::optional<std::vector<Symbol>> parse_symbol_table(std::ifstream& file, const SectionHeader& section, std::string_view table_name);

@@ -200,3 +200,37 @@ std::vector<size_t> sections_in_segment(const ProgramHeader& segment, const std:
     }
     return section_index;
 }
+
+std::optional<std::vector<Symbol>> parse_symbol_table(std::ifstream& file, const SectionHeader& section, std::string_view table_name) {
+    if (section.entsize == 0) {
+        std::cerr << "Malformed " << table_name << " header (entsize is 0)\n";
+        return std::nullopt;
+    } else if (section.entsize < 24) {
+        std::cerr << "Malformed " << table_name << " header (entsize is too small)\n";
+        return std::nullopt;
+    } else if (section.entsize > 24) {
+        std::cerr << "Malformed " << table_name << " header (entsize is too large)\n";
+        return std::nullopt;
+    }
+
+    if (section.size % section.entsize != 0) {
+        std::cerr << "Warning: partial symbol record in " << table_name << " (will not be output)\n";
+    }
+
+    uint64_t symbol_count = section.size/section.entsize;
+    std::vector<Symbol> symbols(symbol_count);
+
+    for (uint64_t i = 0; i < symbol_count; ++i) {
+        file.seekg(section.offset + i * section.entsize);
+        if (!file) {
+            std::cerr << "Failed to seek to " << table_name << " symbol entry\n";
+            return std::nullopt;
+        }
+        if (!read_bytes(file, &symbols[i].name, sizeof(symbols[i].name))) return std::nullopt;
+        if (!read_bytes(file, &symbols[i].info, sizeof(symbols[i].info))) return std::nullopt;
+        if (!read_bytes(file, &symbols[i].other, sizeof(symbols[i].other))) return std::nullopt;
+        if (!read_bytes(file, &symbols[i].shndx, sizeof(symbols[i].shndx))) return std::nullopt;
+        if (!read_bytes(file, &symbols[i].value, sizeof(symbols[i].value))) return std::nullopt;
+        if (!read_bytes(file, &symbols[i].size, sizeof(symbols[i].size))) return std::nullopt;
+    }
+}

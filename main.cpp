@@ -112,6 +112,38 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
+        if (dynsym_header.entsize == 0) {
+            std::cerr << "Malformed dynsym header (entsize is 0)\n";
+            return 1; 
+        } else if (dynsym_header.entsize < 24) {
+            std::cerr << "Malformed dynsym header (entsize is too small)\n";
+            return 1; 
+        } else if (dynsym_header.entsize > 24) {
+            std::cerr << "Malformed dynsym header (entsize is too large)\n";
+            return 1; 
+        }
+
+        if (dynsym_header.size % dynsym_header.entsize != 0) {
+            std::cerr << "Warning: partial symbol record in dynsym (will not be output)\n";
+        }
+
+        uint64_t symbol_count = dynsym_header.size/dynsym_header.entsize;
+        std::vector<Symbol> dynsym_symbols(symbol_count);
+
+        for (uint64_t i = 0; i < symbol_count; ++i) {
+            file.seekg(dynsym_header.offset + i * dynsym_header.entsize);
+            if (!file) {
+                std::cerr << "Failed to seek to dynsym entry\n";
+                return 1;
+            }
+            if (!read_bytes(file, &dynsym_symbols[i].name, sizeof(dynsym_symbols[i].name))) return 1;
+            if (!read_bytes(file, &dynsym_symbols[i].info, sizeof(dynsym_symbols[i].info))) return 1;
+            if (!read_bytes(file, &dynsym_symbols[i].other, sizeof(dynsym_symbols[i].other))) return 1;
+            if (!read_bytes(file, &dynsym_symbols[i].shndx, sizeof(dynsym_symbols[i].shndx))) return 1;
+            if (!read_bytes(file, &dynsym_symbols[i].value, sizeof(dynsym_symbols[i].value))) return 1;
+            if (!read_bytes(file, &dynsym_symbols[i].size, sizeof(dynsym_symbols[i].size))) return 1;
+        }
+
         auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
         if (!parsed_dynsym_strtab) {
             std::cerr << "Failed to read dynsym\n";

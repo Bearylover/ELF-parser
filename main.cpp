@@ -56,41 +56,13 @@ int main(int argc, char* argv[]) {
     if (temp_symtab_header) {
         symtab_header = *temp_symtab_header;
         if (symtab_header.link >= header.section_count) {
-            std::cerr << "Invalid symtab strtab location\n";
+            std::cerr << "Invalid symtab location\n";
             return 1;
         }
 
-        if (symtab_header.entsize == 0) {
-            std::cerr << "Malformed symtab header (entsize is 0)\n";
-            return 1; 
-        } else if (symtab_header.entsize < 24) {
-            std::cerr << "Malformed symtab header (entsize is too small)\n";
-            return 1; 
-        } else if (symtab_header.entsize > 24) {
-            std::cerr << "Malformed symtab header (entsize is too large)\n";
-            return 1; 
-        }
-
-        if (symtab_header.size % symtab_header.entsize != 0) {
-            std::cerr << "Warning: partial symbol record in symtab (will not be output)\n";
-        }
-
-        uint64_t symbol_count = symtab_header.size/symtab_header.entsize;
-        std::vector<Symbol> symtab_symbols(symbol_count);
-
-        for (uint64_t i = 0; i < symbol_count; ++i) {
-            file.seekg(symtab_header.offset + i * symtab_header.entsize);
-            if (!file) {
-                std::cerr << "Failed to seek to symtab entry\n";
-                return 1;
-            }
-            if (!read_bytes(file, &symtab_symbols[i].name, sizeof(symtab_symbols[i].name))) return 1;
-            if (!read_bytes(file, &symtab_symbols[i].info, sizeof(symtab_symbols[i].info))) return 1;
-            if (!read_bytes(file, &symtab_symbols[i].other, sizeof(symtab_symbols[i].other))) return 1;
-            if (!read_bytes(file, &symtab_symbols[i].shndx, sizeof(symtab_symbols[i].shndx))) return 1;
-            if (!read_bytes(file, &symtab_symbols[i].value, sizeof(symtab_symbols[i].value))) return 1;
-            if (!read_bytes(file, &symtab_symbols[i].size, sizeof(symtab_symbols[i].size))) return 1;
-        }
+        auto parsed_symtab = parse_symbol_table(file, symtab_header, "symtab");
+        if (!parsed_symtab) return 1;
+        std::vector<Symbol> symtab = *parsed_symtab;
 
         auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
         if (!parsed_symtab_strtab) {
@@ -112,37 +84,9 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        if (dynsym_header.entsize == 0) {
-            std::cerr << "Malformed dynsym header (entsize is 0)\n";
-            return 1; 
-        } else if (dynsym_header.entsize < 24) {
-            std::cerr << "Malformed dynsym header (entsize is too small)\n";
-            return 1; 
-        } else if (dynsym_header.entsize > 24) {
-            std::cerr << "Malformed dynsym header (entsize is too large)\n";
-            return 1; 
-        }
-
-        if (dynsym_header.size % dynsym_header.entsize != 0) {
-            std::cerr << "Warning: partial symbol record in dynsym (will not be output)\n";
-        }
-
-        uint64_t symbol_count = dynsym_header.size/dynsym_header.entsize;
-        std::vector<Symbol> dynsym_symbols(symbol_count);
-
-        for (uint64_t i = 0; i < symbol_count; ++i) {
-            file.seekg(dynsym_header.offset + i * dynsym_header.entsize);
-            if (!file) {
-                std::cerr << "Failed to seek to dynsym entry\n";
-                return 1;
-            }
-            if (!read_bytes(file, &dynsym_symbols[i].name, sizeof(dynsym_symbols[i].name))) return 1;
-            if (!read_bytes(file, &dynsym_symbols[i].info, sizeof(dynsym_symbols[i].info))) return 1;
-            if (!read_bytes(file, &dynsym_symbols[i].other, sizeof(dynsym_symbols[i].other))) return 1;
-            if (!read_bytes(file, &dynsym_symbols[i].shndx, sizeof(dynsym_symbols[i].shndx))) return 1;
-            if (!read_bytes(file, &dynsym_symbols[i].value, sizeof(dynsym_symbols[i].value))) return 1;
-            if (!read_bytes(file, &dynsym_symbols[i].size, sizeof(dynsym_symbols[i].size))) return 1;
-        }
+        auto parsed_dynsym = parse_symbol_table(file, dynsym_header, "dynsym");
+        if (!parsed_dynsym) return 1;
+        std::vector<Symbol> dynsym = *parsed_dynsym;
 
         auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
         if (!parsed_dynsym_strtab) {

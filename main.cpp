@@ -60,6 +60,38 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
+        if (symtab_header.entsize == 0) {
+            std::cerr << "Malformed symtab header (entsize is 0)\n";
+            return 1; 
+        } else if (symtab_header.entsize < 24) {
+            std::cerr << "Malformed symtab header (entsize is too small)\n";
+            return 1; 
+        } else if (symtab_header.entsize > 24) {
+            std::cerr << "Malformed symtab header (entsize is too large)\n";
+            return 1; 
+        }
+
+        if (symtab_header.size % symtab_header.entsize != 0) {
+            std::cerr << "Warning: partial symbol record in symtab (will not be output)\n";
+        }
+
+        uint64_t symbol_count = symtab_header.size/symtab_header.entsize;
+        std::vector<Symbol> symtab_symbols(symbol_count);
+
+        for (uint64_t i = 0; i < symbol_count; ++i) {
+            file.seekg(symtab_header.offset + i * symtab_header.entsize);
+            if (!file) {
+                std::cerr << "Failed to seek to symtab entry\n";
+                return 1;
+            }
+            if (!read_bytes(file, &symtab_symbols[i].name, sizeof(symtab_symbols[i].name))) return 1;
+            if (!read_bytes(file, &symtab_symbols[i].info, sizeof(symtab_symbols[i].info))) return 1;
+            if (!read_bytes(file, &symtab_symbols[i].other, sizeof(symtab_symbols[i].other))) return 1;
+            if (!read_bytes(file, &symtab_symbols[i].shndx, sizeof(symtab_symbols[i].shndx))) return 1;
+            if (!read_bytes(file, &symtab_symbols[i].value, sizeof(symtab_symbols[i].value))) return 1;
+            if (!read_bytes(file, &symtab_symbols[i].size, sizeof(symtab_symbols[i].size))) return 1;
+        }
+
         auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
         if (!parsed_symtab_strtab) {
             std::cerr << "Failed to read symtab strtab\n";

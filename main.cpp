@@ -72,6 +72,10 @@ int main(int argc, char* argv[]) {
         if (!parsed_symtab) return 1;
         std::vector<Symbol> symtab = *parsed_symtab;
 
+        for (Symbol symbol : symtab) {
+            print_symbol(symbol);
+        }
+
         auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
         if (!parsed_symtab_strtab) {
             std::cerr << "Failed to read symtab strtab\n";
@@ -95,6 +99,10 @@ int main(int argc, char* argv[]) {
         auto parsed_dynsym = parse_symbol_table(file, dynsym_header, "dynsym");
         if (!parsed_dynsym) return 1;
         std::vector<Symbol> dynsym = *parsed_dynsym;
+
+        for (Symbol symbol : dynsym) {
+            print_symbol(symbol);
+        }
 
         auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
         if (!parsed_dynsym_strtab) {

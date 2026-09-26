@@ -233,4 +233,6 @@ std::optional<std::vector<Symbol>> parse_symbol_table(std::ifstream& file, const
         if (!read_bytes(file, &symbols[i].value, sizeof(symbols[i].value))) return std::nullopt;
         if (!read_bytes(file, &symbols[i].size, sizeof(symbols[i].size))) return std::nullopt;
     }
+
+    return symbols;
 }

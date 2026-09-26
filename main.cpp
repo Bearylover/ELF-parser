@@ -23,10 +23,14 @@ int main(int argc, char* argv[]) {
     auto parsed_header = parse_header(file);
     if (!parsed_header) return 1;
     ELFHeader header = *parsed_header;
+    std::cout << "Header Info: \n";
+    print_header_info(header);
 
     auto parsed_section_header = parse_section_headers(file, header);
     if (!parsed_section_header) return 1;
     std::vector<SectionHeader> sections = *parsed_section_header;
+    std::cout << "\nSection Header String Table Section: \n";
+    print_section_header(sections[header.section_string_index]);
 
     if (header.section_string_index >= sections.size()) {
         std::cerr << "Invalid section string table index\n";
@@ -38,10 +42,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::vector<char> shstrtab = *parsed_shstrtab;
+    std::cout << "\nSection Header String Table: \n";
+    print_section(shstrtab);
 
     auto parsed_program_header = parse_program_headers(file, header);
     if (!parsed_program_header) return 1;
     std::vector<ProgramHeader> programs = *parsed_program_header;
+    std::cout << "\nSegment list: \n";
+    print_sections_in_segments(sections, programs, shstrtab);
 
     std::optional<SectionHeader> temp_symtab_header = {}, temp_dynsym_header = {};
     SectionHeader symtab_header, dynsym_header;
@@ -100,15 +108,6 @@ int main(int argc, char* argv[]) {
     } else {
         std::cout << "\nNo dynamic symbol table found.\n";
     }
-
-    std::cout << "Header Info: \n";
-    print_header_info(header);
-    std::cout << "\nSection Header String Table Section: \n";
-    print_section_header(sections[header.section_string_index]);
-    std::cout << "\nSection Header String Table: \n";
-    print_section(shstrtab);
-    std::cout << "\nSegment list: \n";
-    print_sections_in_segments(sections, programs, shstrtab);
 
     return 0;
 }

@@ -73,6 +73,7 @@ int main(int argc, char* argv[]) {
         std::vector<Symbol> symtab = *parsed_symtab;
 
         for (Symbol symbol : symtab) {
+            std::cout << "\nSymtab:\n";
             print_symbol(symbol);
         }
 
@@ -101,6 +102,7 @@ int main(int argc, char* argv[]) {
         std::vector<Symbol> dynsym = *parsed_dynsym;
 
         for (Symbol symbol : dynsym) {
+            std::cout << "\nDynsym:\n";
             print_symbol(symbol);
         }
 

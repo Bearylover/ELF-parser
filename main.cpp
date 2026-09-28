@@ -29,13 +29,13 @@ int main(int argc, char* argv[]) {
     auto parsed_section_header = parse_section_headers(file, header);
     if (!parsed_section_header) return 1;
     std::vector<SectionHeader> sections = *parsed_section_header;
-    std::cout << "\nSection Header String Table Section: \n";
-    print_section_header(sections[header.section_string_index]);
-
     if (header.section_string_index >= sections.size()) {
         std::cerr << "Invalid section string table index\n";
         return 1;
     }
+    std::cout << "\nSection Header String Table Section: \n";
+    print_section_header(sections[header.section_string_index]);
+
     auto parsed_shstrtab = read_section(file, sections[header.section_string_index]);
     if (!parsed_shstrtab) {
         std::cerr << "Failed to read shstrtab\n";

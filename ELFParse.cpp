@@ -95,7 +95,7 @@ std::optional<std::vector<SectionHeader>> parse_section_headers(std::ifstream& f
     uint64_t offset;
     std::vector<SectionHeader> sections(header.section_count);
 
-    for (uint16_t i = 0; i < header.section_count; ++i) {
+    for (uint64_t i = 0; i < header.section_count; ++i) {
         offset = header.section_offset + i * header.section_entry_size;
         file.seekg(offset);
         if (!file) {

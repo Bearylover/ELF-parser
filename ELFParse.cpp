@@ -130,8 +130,8 @@ std::optional<std::vector<ProgramHeader>> parse_program_headers(std::ifstream& f
     uint64_t offset;
     std::vector<ProgramHeader> programs(header.program_count);
 
-    for (uint16_t i = 0; i < header.program_count; ++i) {
-        offset = header.program_offset+ i * header.program_entry_size;
+    for (uint64_t i = 0; i < header.program_count; ++i) {
+        offset = header.program_offset + i * header.program_entry_size;
         file.seekg(offset);
         if (!file) {
             std::cerr << "Failed to seek program " << i << " header\n";

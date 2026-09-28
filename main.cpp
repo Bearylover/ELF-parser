@@ -72,9 +72,11 @@ int main(int argc, char* argv[]) {
         if (!parsed_symtab) return 1;
         std::vector<Symbol> symtab = *parsed_symtab;
 
+        std::cout << "\nSymtab:\n";
         for (Symbol symbol : symtab) {
-            std::cout << "\nSymtab:\n";
+            std::cout << "-----------------\n";
             print_symbol(symbol);
+            std::cout << "-----------------\n";
         }
 
         auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
@@ -101,9 +103,11 @@ int main(int argc, char* argv[]) {
         if (!parsed_dynsym) return 1;
         std::vector<Symbol> dynsym = *parsed_dynsym;
 
+        std::cout << "\nDynsym:\n";
         for (Symbol symbol : dynsym) {
-            std::cout << "\nDynsym:\n";
+            std::cout << "-----------------\n";
             print_symbol(symbol);
+            std::cout << "-----------------\n";
         }
 
         auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);

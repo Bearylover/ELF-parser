@@ -179,7 +179,7 @@ void print_sections_in_segments(const std::vector<SectionHeader>& sections, cons
 }
 
 void print_symbol (const Symbol& symbol) {
-    std::cout << "Name: " << symbol.name << "\n";
+    std::cout << "Name offset: " << symbol.name << "\n";
     std::cout << "Info: " << static_cast<unsigned int>(symbol.info) << "\n";
     std::cout << "Other: " << static_cast<unsigned int>(symbol.other) << "\n";
     std::cout << "Shndx: " << symbol.shndx << "\n";

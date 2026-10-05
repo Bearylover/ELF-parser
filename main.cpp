@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
         }
         std::vector<char> dynsym_strtab = *parsed_dynsym_strtab;
 
-        std::cout << "\nDynsym: \n";
+        std::cout << "\nDynstr: \n";
         print_section(dynsym_strtab);
     } else {
         std::cout << "\nNo dynamic symbol table found.\n";

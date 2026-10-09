@@ -170,7 +170,7 @@ std::optional<std::string> get_section_name(const SectionHeader& section, const 
 }
 
 std::optional<std::string> get_name(uint32_t offset, const std::vector<char>& strtab) {
-    uint32_t init_idx = offset;
+    size_t init_idx = offset;
     std::string resolved_name;
     if (init_idx >= strtab.size()) {
         std::cout << "Name out of bounds\n";

@@ -72,22 +72,22 @@ int main(int argc, char* argv[]) {
         if (!parsed_symtab) return 1;
         std::vector<Symbol> symtab = *parsed_symtab;
 
-        std::cout << "\nSymtab:\n";
-        uint32_t counter = 0;
-        for (Symbol symbol : symtab) {
-            std::cout << "-----------------\n";
-            std::cout << "Symbol " << counter << ":\n";
-            print_symbol(symbol);
-            counter++;
-        }
-        std::cout << "-----------------\n";
-
         auto parsed_symtab_strtab = read_section(file, sections[symtab_header.link]);
         if (!parsed_symtab_strtab) {
             std::cerr << "Failed to read symtab strtab\n";
             return 1;
         }
         std::vector<char> symtab_strtab = *parsed_symtab_strtab;
+
+        std::cout << "\nSymtab:\n";
+        uint32_t counter = 0;
+        for (Symbol symbol : symtab) {
+            std::cout << "-----------------\n";
+            std::cout << "Symbol " << counter << ":\n";
+            print_symbol(symbol, symtab_strtab);
+            counter++;
+        }
+        std::cout << "-----------------\n";
 
         std::cout << "\nSymtab: \n";
         print_section(symtab_strtab);
@@ -106,22 +106,22 @@ int main(int argc, char* argv[]) {
         if (!parsed_dynsym) return 1;
         std::vector<Symbol> dynsym = *parsed_dynsym;
 
-        std::cout << "\nDynsym:\n";
-        uint32_t counter = 0;
-        for (Symbol symbol : dynsym) {
-            std::cout << "-----------------\n";
-            std::cout << "Symbol " << counter << ":\n";
-            print_symbol(symbol);
-            counter++;
-        }
-        std::cout << "-----------------\n";
-
         auto parsed_dynsym_strtab = read_section(file, sections[dynsym_header.link]);
         if (!parsed_dynsym_strtab) {
             std::cerr << "Failed to read dynsym\n";
             return 1;
         }
         std::vector<char> dynsym_strtab = *parsed_dynsym_strtab;
+
+        std::cout << "\nDynsym:\n";
+        uint32_t counter = 0;
+        for (Symbol symbol : dynsym) {
+            std::cout << "-----------------\n";
+            std::cout << "Symbol " << counter << ":\n";
+            print_symbol(symbol, dynsym_strtab);
+            counter++;
+        }
+        std::cout << "-----------------\n";
 
         std::cout << "\nDynstr: \n";
         print_section(dynsym_strtab);

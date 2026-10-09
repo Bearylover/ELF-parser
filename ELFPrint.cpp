@@ -178,8 +178,12 @@ void print_sections_in_segments(const std::vector<SectionHeader>& sections, cons
     }
 }
 
-void print_symbol (const Symbol& symbol) {
+void print_symbol (const Symbol& symbol, const std::vector<char>& section_strtab) {
     std::cout << "Name offset: " << symbol.name << "\n";
+    auto parsed_name = get_name(symbol.name, section_strtab);
+    if (parsed_name) {
+        std::cout << "Name: " << *parsed_name << "\n";
+    }
     std::cout << "Info: " << static_cast<unsigned int>(symbol.info) << "\n";
     std::cout << "Other: " << static_cast<unsigned int>(symbol.other) << "\n";
     std::cout << "Shndx: " << symbol.shndx << "\n";

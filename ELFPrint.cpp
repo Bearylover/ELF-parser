@@ -169,7 +169,7 @@ void print_sections_in_segments(const std::vector<SectionHeader>& sections, cons
         std::cout << "Segment " << idx << ":\n";
         for (auto j : section_index) {
             std::cout << "| ";
-            auto parsed_name = get_section_name(sections[j], section_strtab);
+            auto parsed_name = get_name(sections[j].name, section_strtab);
             if (parsed_name) {
                 std::cout << *parsed_name << "\n";
             }

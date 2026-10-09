@@ -169,6 +169,24 @@ std::optional<std::string> get_section_name(const SectionHeader& section, const 
     return resolved_name;
 }
 
+std::optional<std::string> get_name(uint32_t offset, const std::vector<char>& strtab) {
+    uint32_t init_idx = offset;
+    std::string resolved_name;
+    if (init_idx >= strtab.size()) {
+        std::cout << "Name out of bounds\n";
+        return std::nullopt;
+    }
+    while ((init_idx < strtab.size() && strtab[init_idx] != 0)) {
+        resolved_name.push_back(strtab[init_idx]);
+        init_idx++;
+    }
+    if (init_idx == strtab.size()) {
+        std::cout << "Name out of bounds\n";
+        return std::nullopt;
+    }
+    return resolved_name;
+}
+
 std::string get_program_flags(uint32_t flags) {
     std::string result;
     if (flags & 4) {

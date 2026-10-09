@@ -18,3 +18,4 @@ std::optional<std::string> get_section_name(const SectionHeader& section, const 
 std::string get_program_flags(uint32_t flags);
 std::vector<size_t> sections_in_segment(const ProgramHeader& segment, const std::vector<SectionHeader>& sections);
 std::optional<std::vector<Symbol>> parse_symbol_table(std::ifstream& file, const SectionHeader& section, std::string_view table_name);
+std::optional<std::string> get_name(uint32_t offset, const std::vector<char>& strtab);
